@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-19",
+  "environment": {
+    "jax": "0.6.0",
+    "jaxlib": "0.6.0",
+    "flax": "0.10.7",
+    "onnx": "1.18.0",
+    "onnxruntime": "1.27.0",
+    "ml_dtypes": "0.5.1",
+    "python": "3.11"
+  },
+  "backend": "CPU / ONNX Runtime CPUExecutionProvider",
+  "upstream_base": "0.8.1",
+  "reference": "0.17.1",
+  "regression": {
+    "total": 1251,
+    "numeric_passed": 1239,
+    "graph_only": 12,
+    "failed": 0
+  },
+  "graph_only_cases": [
+    "primitives.eqx/dropout/eqx_dropout_training_mode",
+    "primitives.eqx/dropout/eqx_dropout_training_mode_f64",
+    "examples.eqx/MlpExample/mlp_training_mode",
+    "examples.eqx/MlpExample/mlp_training_mode_f64",
+    "examples.eqx/MlpExample/mlp_batched_training_mode_dynamic",
+    "examples.eqx/MlpExample/mlp_batched_training_mode_dynamic_f64",
+    "examples.eqx/MlpExample/mlp_batched_training_mode",
+    "examples.eqx/MlpExample/mlp_batched_training_mode_f64",
+    "primitives.lax/reduce_max/reduce_max_axes_input",
+    "primitives.lax/reduce_max/reduce_max_axes_input_f64",
+    "primitives.jnp/cumsum/cumsum_axis2_reverse_i32",
+    "primitives.jnp/cumsum/cumsum_axis2_reverse_i32_f64"
+  ],
+  "transforms": [
+    {
+      "name": "nnx_vmap_shared",
+      "status": "passed",
+      "maximum_absolute_error": 1.1920928955078125e-07
+    },
+    {
+      "name": "nnx_vmap_mapped",
+      "status": "passed",
+      "maximum_absolute_error": 1.1920928955078125e-07
+    },
+    {
+      "name": "nnx_scan_carry",
+      "status": "passed",
+      "maximum_absolute_error": 0.0
+    },
+    {
+      "name": "nnx_scan_gru",
+      "status": "passed",
+      "maximum_absolute_error": 1.7881393432617188e-07
+    },
+    {
+      "name": "nnx_vmap_scan",
+      "status": "passed",
+      "maximum_absolute_error": 1.7881393432617188e-07
+    },
+    {
+      "name": "nnx_scan_layers",
+      "status": "passed",
+      "maximum_absolute_error": 1.1920928955078125e-07
+    },
+    {
+      "name": "nnx_scan_dynamic_time",
+      "status": "passed",
+      "maximum_absolute_error": 0.0
+    },
+    {
+      "name": "nnx_vmap_layer_norm",
+      "status": "passed",
+      "maximum_absolute_error": 2.384185791015625e-07
+    },
+    {
+      "name": "nnx_vmap_bound_method",
+      "status": "passed",
+      "maximum_absolute_error": 1.1920928955078125e-07
+    },
+    {
+      "name": "nnx_vmap_scan_dynamic_time",
+      "status": "passed",
+      "maximum_absolute_error": 1.6391277313232422e-07
+    },
+    {
+      "name": "nnx_scan_reverse",
+      "status": "passed",
+      "maximum_absolute_error": 0.0
+    },
+    {
+      "name": "jax_scan_reverse_no_inputs",
+      "status": "passed",
+      "maximum_absolute_error": 0.0
+    }
+  ],
+  "project_exports": [
+    {
+      "name": "asymmetric",
+      "status": "passed",
+      "input_shape": [
+        1,
+        3
+      ],
+      "maximum_absolute_error": 5.960464477539063e-08
+    },
+    {
+      "name": "symmetric",
+      "status": "passed",
+      "input_shape": [
+        1,
+        7
+      ],
+      "maximum_absolute_error": 3.725290298461914e-09
+    },
+    {
+      "name": "vsimba",
+      "status": "passed",
+      "input_shape": [
+        1,
+        3,
+        32,
+        32,
+        3
+      ],
+      "maximum_absolute_error": 1.3560056686401367e-06
+    }
+  ],
+  "project_training": {
+    "jit_branches_passed": 16,
+    "cases": [
+      "asymmetric float32",
+      "symmetric float32",
+      "asymmetric bfloat16 with frozen encoders",
+      "V-Simba visual float32"
+    ]
+  },
+  "harness": {
+    "source": "https://github.com/enpasos/jax2onnx/blob/v0.8.1/tests/t_generator.py",
+    "adjustments": [
+      "Use jax.experimental.enable_x64 in place of invalid config.update context managers.",
+      "Set the requested FP32/FP64 context around each test variant.",
+      "Replace logging-only configuration dependency with standard logging."
+    ],
+    "final_changes_followed_by_focused_validation": [
+      "Shared JIT/custom JVP subgraph isolation: 12 transform cases and 3 project policy exports."
+    ]
+  },
+  "limitations": [
+    "Project export numerical comparisons use float32 compute.",
+    "Legacy BF16 conversion can promote operations to float32; BF16 numerical preservation is not claimed.",
+    "GPU ONNX Runtime and other JAX/Flax versions were not validated."
+  ]
+}

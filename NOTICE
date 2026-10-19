@@ -1,0 +1,36 @@
+jax2onnx compatibility build
+
+Based on enpasos/jax2onnx v0.8.1, distributed under Apache License 2.0.
+Source: https://github.com/enpasos/jax2onnx
+Base commit: 4df18bd9428da7a9e1aead47b8afceb042dfbae8
+
+This derivative retains the legacy converter and public API for JAX 0.6.0
+and Flax 0.10.7. Selected operator lowerings are adapted from jax2onnx
+0.17.1 to the legacy plugin interface. It does not include all features
+of jax2onnx 0.17.1.
+Reference commit: 673badcbb837f1c052f888c70bc857dd23b49c16
+
+Modifications:
+- Added rsqrt lowering using Sqrt and Div, with shape and dtype metadata.
+- Added general dot_general contractions using Einsum, retaining matrix fast paths.
+- Preserved dynamic input dimensions when lowering broadcast_in_dim.
+- Rebuilt NNX graph state inside tracing and retained nested model instances.
+- Preserved native JAX batching through vmap and nested scan tracing.
+- Fixed Scan/Loop result ordering, reverse iteration, and passthrough state aliases.
+- Removed unused NNX state and RNG constants before conversion.
+- Lifted while-loop closure values into explicit state for correct JAX data flow.
+- Used native Flax math for arbitrary LayerNorm reduction axes.
+- Preserved typed constants and Flax parameter promotion during export.
+- Kept the caller's JAX precision configuration unchanged.
+- Stored the GPT example's causal mask as a boolean array.
+- Gave the float32 take test fixture an explicit parameter dtype.
+- Preserved nested ONNX function instances without mutating cached JAX equations.
+- Matched JAX dtype promotion in concatenation and Equinox layers.
+- Isolated custom JVP and JIT subgraphs with shared conversion logic.
+
+The public import remains jax2onnx. This compatibility distribution targets
+JAX 0.6.0 and Flax 0.10.7; other JAX/Flax versions are not claimed as supported.
+
+Project policy inference is validated with float32 compute on CPU ONNX Runtime.
+BF16 numerical preservation is not claimed: the legacy converter can promote
+BF16 operations to float32. GPU ONNX Runtime has not been validated.
